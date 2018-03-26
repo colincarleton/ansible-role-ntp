@@ -1,0 +1,22 @@
+---
+- name: Install NTP
+  yum:
+    name: ntp
+    state: latest
+
+- name: Remove Timezone Link
+  file:
+    path: /etc/localtime
+    state: absent
+
+- name: Link Centeral Timezone
+  file:
+    src: '/usr/share/zoneinfo/{{ timezone }}'
+    dest: '/etc/localtime'
+    state: link
+
+- name: Configure NTP Pool
+  template:
+    src: ntp.conf.j2
+    dest: /etc/ntp.conf
+  notify: Restart NTP
